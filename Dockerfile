@@ -1,6 +1,6 @@
 FROM   busybox 
 
-ADD server /server
+ADD server server
 
 VOLUME /www
 USER daemon
