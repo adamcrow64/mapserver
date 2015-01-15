@@ -1,8 +1,7 @@
 FROM  busybox
 
-USER daemon
 RUN mkdir server
-RUN chmod 700 server
+RUN chmod 777 server
 RUN chown daemon.daemon server
 ADD server server
 
