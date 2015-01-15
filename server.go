@@ -1,4 +1,4 @@
-package mapserver
+package server
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ type Server interface {
 	http.Handler
 }
 
-type mapserver struct {
+type server struct {
 	sync.Mutex
 
 	r        *mux.Router
@@ -28,7 +28,7 @@ type mapserver struct {
 func New(logger *logrus.Logger) Server {
 	r := mux.NewRouter()
 
-	s := &mapserver{
+	s := &server{
 		r:        r,
 		logger:   logger,
 		backends: make(map[string]proxy.Proxy),
