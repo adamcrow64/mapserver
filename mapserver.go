@@ -1,4 +1,4 @@
-package server
+package mapserver
 
 import (
 	"encoding/json"
