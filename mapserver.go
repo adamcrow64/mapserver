@@ -17,7 +17,7 @@ type Server interface {
 	http.Handler
 }
 
-type server struct {
+type mapserver struct {
 	sync.Mutex
 
 	r        *mux.Router
@@ -28,7 +28,7 @@ type server struct {
 func New(logger *logrus.Logger) Server {
 	r := mux.NewRouter()
 
-	s := &server{
+	s := &mapserver{
 		r:        r,
 		logger:   logger,
 		backends: make(map[string]proxy.Proxy),
