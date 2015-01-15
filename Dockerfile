@@ -1,6 +1,6 @@
 FROM scratch 
 
-ADD bin/server /server
+ADD server /server
 
 VOLUME /www
 USER daemon
