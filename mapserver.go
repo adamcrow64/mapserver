@@ -1,4 +1,4 @@
-package mapserver 
+package main 
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello World from Go in minimal Docker container")
 }
 
-func mapserver() {
+func main() {
 	http.HandleFunc("/", helloHandler)
 
 	fmt.Println("Started, serving at 8080")
