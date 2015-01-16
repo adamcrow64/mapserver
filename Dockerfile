@@ -1,9 +1,9 @@
 FROM   busybox 
 
-ADD server /server
+ADD bin/mapserver /mapserver
 
 VOLUME /www
-#USER daemon
+USER daemon
 EXPOSE 8000
 
-ENTRYPOINT ["/server", "-h", "0.0.0.0", "-p", "8000", "-dir", "/www"]
+ENTRYPOINT ["/mapserver", "-h", "0.0.0.0", "-p", "8000", "-dir", "/www"]

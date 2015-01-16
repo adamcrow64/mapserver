@@ -1,4 +1,4 @@
-package server
+package mapserver
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ type Server interface {
 	http.Handler
 }
 
-type server struct {
+type mapserver struct {
 	sync.Mutex
 
 	r        *mux.Router
@@ -28,7 +28,7 @@ type server struct {
 func New(logger *logrus.Logger) Server {
 	r := mux.NewRouter()
 
-	s := &server{
+	s := &mapserver{
 		r:        r,
 		logger:   logger,
 		backends: make(map[string]proxy.Proxy),
@@ -42,11 +42,11 @@ func New(logger *logrus.Logger) Server {
 	return s
 }
 
-func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *mapserver) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.r.ServeHTTP(w, r)
 }
 
-func (s *server) Close() error {
+func (s *mapserver) Close() error {
 	s.Lock()
 	defer s.Unlock()
 
@@ -65,7 +65,7 @@ func (s *server) Close() error {
 	return err
 }
 
-func (s *server) listBackends(w http.ResponseWriter, r *http.Request) {
+func (s *mapserver) listBackends(w http.ResponseWriter, r *http.Request) {
 	s.logger.Debug("listing backends")
 
 	out := []*proxy.Backend{}
@@ -79,7 +79,7 @@ func (s *server) listBackends(w http.ResponseWriter, r *http.Request) {
 	s.marshal(w, out)
 }
 
-func (s *server) getBackend(w http.ResponseWriter, r *http.Request) {
+func (s *mapserver) getBackend(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 
 	s.logger.WithField("id", id).Debug("getting backend")
@@ -97,7 +97,7 @@ func (s *server) getBackend(w http.ResponseWriter, r *http.Request) {
 	s.marshal(w, p.Backend())
 }
 
-func (s *server) addBackend(w http.ResponseWriter, r *http.Request) {
+func (s *mapserver) addBackend(w http.ResponseWriter, r *http.Request) {
 	var (
 		backend *proxy.Backend
 		id      = mux.Vars(r)["id"]
@@ -152,7 +152,7 @@ func (s *server) addBackend(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (s *server) deleteBackend(w http.ResponseWriter, r *http.Request) {
+func (s *mapserver) deleteBackend(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 
 	s.logger.WithField("id", id).Info("deleting backend")
@@ -183,7 +183,7 @@ func (s *server) deleteBackend(w http.ResponseWriter, r *http.Request) {
 	s.Unlock()
 }
 
-func (s *server) marshal(w http.ResponseWriter, v interface{}) {
+func (s *mapserver) marshal(w http.ResponseWriter, v interface{}) {
 	w.Header().Set("content-type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(v); err != nil {
